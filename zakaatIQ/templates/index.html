@@ -1,87 +1,55 @@
 {% extends "base.html" %}
+{% block title %}ZakaatIQ – Smart Islamic Finance Assistant{% endblock %}
 
 {% block content %}
-
 <!-- HERO SECTION -->
-<section class="hero" style="background-image: url('{{ url_for('static', filename='images/hero.jpg') }}');">
-    <div class="hero-overlay">
-        <div class="container text-center text-light">
-            <h1 class="hero-title">
-                “Those who give in charity will have their reward with their Lord.”
-            </h1>
-            <p class="hero-subtitle">— Qur’an 2:274</p>
+<section class="hero-section position-relative text-center d-flex align-items-center justify-content-center"
+         style="
+            background: url('{{ url_for('static', filename='images/hero.jpg') }}') center/cover no-repeat;
+            height: 100vh;
+            position: relative;
+        ">
+    
+    <!-- Dark overlay -->
+    <div class="overlay"
+         style="
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.55);
+        ">
+    </div>
 
-            <a href="{{ url_for('eligibility') }}" class="btn btn-gold btn-lg mt-3">
-                Check Zakat Eligibility
+    <!-- HERO CONTENT -->
+    <div class="container position-relative" style="z-index: 2;">
+        
+        <!-- Arabic Calligraphy -->
+        <h1 class="text-white mb-4" style="
+            font-size: 3rem;
+            font-weight: 700;
+            line-height: 1.4;
+        ">
+            وتوكل على الله وكفى بالله وكيلا
+        </h1>
+
+        <!-- English Translation -->
+        <p class="text-white lead mb-5" style="max-width: 700px; margin: 0 auto;">
+            “And put your trust in Allah; and sufficient is Allah as a Disposer of affairs.”
+            <br><span style="font-size: 0.9rem;">— Qur’an 33:3</span>
+        </p>
+
+        <!-- Buttons -->
+        <div class="d-flex justify-content-center gap-3 mt-4">
+            <a href="{{ url_for('login') }}" class="btn btn-light px-4 py-2" style="font-size: 1.1rem;">
+                Login
+            </a>
+
+            <a href="{{ url_for('dashboard') }}" class="btn btn-warning px-4 py-2"
+               style="font-size: 1.1rem; color: #000; font-weight: 600;">
+                Get Started
             </a>
         </div>
+
     </div>
 </section>
-
-
-<!-- DUAS & HADITHS SECTION -->
-<section class="section-padding container text-center">
-    <h2 class="mb-4 fw-bold">Duas & Hadiths About Charity</h2>
-
-    <div class="row">
-        <div class="col-md-4">
-            <div class="islam-card">
-                <p class="card-text">
-                    “Charity does not decrease wealth.”  
-                    <br><strong>— Sahih Muslim</strong>
-                </p>
-            </div>
-        </div>
-
-        <div class="col-md-4">
-            <div class="islam-card">
-                <p class="card-text">
-                    “The believer’s shade on the Day of Resurrection will be his charity.”
-                    <br><strong>— Tirmidhi</strong>
-                </p>
-            </div>
-        </div>
-
-        <div class="col-md-4">
-            <div class="islam-card">
-                <p class="card-text">
-                    “O Allah, make me among those who purify their wealth through Zakat.”
-                    <br><strong>— Dua</strong>
-                </p>
-            </div>
-        </div>
-    </div>
-</section>
-
-
-<!-- ZAKAT REMINDER SECTION -->
-<section class="section-padding bg-light">
-    <div class="container text-center">
-        <h2 class="fw-bold mb-4">What You Should Know About Zakat</h2>
-
-        <div class="row">
-            <div class="col-md-4">
-                <div class="info-card">
-                    <h5>Nisab Threshold</h5>
-                    <p>Zakat becomes due once your wealth exceeds the Nisab (value of 612.36g of silver).</p>
-                </div>
-            </div>
-
-            <div class="col-md-4">
-                <div class="info-card">
-                    <h5>Purification</h5>
-                    <p>Zakat purifies your wealth and protects it from harm and spiritual loss.</p>
-                </div>
-            </div>
-
-            <div class="col-md-4">
-                <div class="info-card">
-                    <h5>Who Must Pay</h5>
-                    <p>Muslims who possess the Nisab for one full Hijri year are obligated to pay Zakat.</p>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
 {% endblock %}
