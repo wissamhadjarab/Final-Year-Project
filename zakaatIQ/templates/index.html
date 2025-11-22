@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<!-- HERO SECTION -->
+<section class="hero" style="background-image: url('{{ url_for('static', filename='images/hero.jpg') }}');">
+    <div class="hero-overlay">
+        <div class="container text-center text-light">
+            <h1 class="hero-title">
+                “Those who give in charity will have their reward with their Lord.”
+            </h1>
+            <p class="hero-subtitle">— Qur’an 2:274</p>
+
+            <a href="{{ url_for('eligibility') }}" class="btn btn-gold btn-lg mt-3">
+                Check Zakat Eligibility
+            </a>
+        </div>
+    </div>
+</section>
+
+
+<!-- DUAS & HADITHS SECTION -->
+<section class="section-padding container text-center">
+    <h2 class="mb-4 fw-bold">Duas & Hadiths About Charity</h2>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="islam-card">
+                <p class="card-text">
+                    “Charity does not decrease wealth.”  
+                    <br><strong>— Sahih Muslim</strong>
+                </p>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="islam-card">
+                <p class="card-text">
+                    “The believer’s shade on the Day of Resurrection will be his charity.”
+                    <br><strong>— Tirmidhi</strong>
+                </p>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="islam-card">
+                <p class="card-text">
+                    “O Allah, make me among those who purify their wealth through Zakat.”
+                    <br><strong>— Dua</strong>
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- ZAKAT REMINDER SECTION -->
+<section class="section-padding bg-light">
+    <div class="container text-center">
+        <h2 class="fw-bold mb-4">What You Should Know About Zakat</h2>
+
+        <div class="row">
+            <div class="col-md-4">
+                <div class="info-card">
+                    <h5>Nisab Threshold</h5>
+                    <p>Zakat becomes due once your wealth exceeds the Nisab (value of 612.36g of silver).</p>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="info-card">
+                    <h5>Purification</h5>
+                    <p>Zakat purifies your wealth and protects it from harm and spiritual loss.</p>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="info-card">
+                    <h5>Who Must Pay</h5>
+                    <p>Muslims who possess the Nisab for one full Hijri year are obligated to pay Zakat.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

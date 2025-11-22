@@ -1,0 +1,65 @@
+/* TOPBAR */
+.topbar {
+    background: #C59D5F;
+    padding: 6px 0;
+}
+
+/* LOGO */
+.logo-text {
+    font-size: 28px;
+    font-weight: bold;
+    color: #C59D5F;
+}
+
+/* HERO SECTION */
+.hero {
+    height: 75vh;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}
+
+.hero-overlay {
+    background: rgba(0, 0, 0, 0.55);
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.hero-title {
+    font-size: 40px;
+    font-weight: 600;
+}
+
+.hero-subtitle {
+    font-size: 20px;
+    opacity: 0.9;
+}
+
+/* GOLD BUTTON */
+.btn-gold {
+    background-color: #C59D5F;
+    color: #fff;
+    padding: 12px 25px;
+    border-radius: 5px;
+}
+
+.btn-gold:hover {
+    background-color: #a7844c;
+    color: white;
+}
+
+/* Islamic Cards */
+.islam-card, .info-card {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    border: 2px solid #C59D5F;
+    margin-bottom: 20px;
+}
+
+/* FOOTER */
+.footer {
+    background: #C59D5F;
+}
