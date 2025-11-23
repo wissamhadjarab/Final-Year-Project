@@ -127,17 +127,19 @@ def forecast():
     graph = None
 
     if request.method == "POST":
-        months = [1, 2, 3, 4, 5, 6]
-        income = [2000, 2200, 2100, 2300, 2400, 2500]
+        # Demo forecast values
+        months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun"]
+        income = [2000, 2100, 2200, 2300, 2400, 2550]
 
-        plt.figure(figsize=(6, 4))
-        plt.plot(months, income)
-        plt.title("Income Trend (Demo)")
+        plt.figure(figsize=(6,4))
+        plt.plot(months, income, linewidth=3)
+        plt.title("6-Month AI Forecast", fontsize=14)
         plt.xlabel("Month")
         plt.ylabel("Income (€)")
 
+        # Convert graph to base64
         png = io.BytesIO()
-        plt.savefig(png, format="png")
+        plt.savefig(png, format="png", bbox_inches="tight")
         png.seek(0)
         graph = base64.b64encode(png.getvalue()).decode()
 
