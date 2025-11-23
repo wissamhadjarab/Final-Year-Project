@@ -8,7 +8,7 @@ import pickle
 # LIVE GOLD & SILVER PRICES USING GOLDAPI.IO
 # ---------------------------------------
 
-GOLD_API_KEY = "goldapi-a77fy7smi9hhlww-io"   # YOUR WORKING KEY
+GOLD_API_KEY = "goldapi-a77fy7smi9hhlww-io"   # WORKING KEY
 
 def get_live_gold_price_eur():
     url = "https://www.goldapi.io/api/XAU/EUR"

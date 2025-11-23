@@ -1,92 +1,36 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <title>ZakaatIQ – Zakat Eligibility</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+{% extends "base.html" %}
+{% block content %}
 
-    <!-- CSS FILES -->
-    <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
-    <link href="{{ url_for('static', filename='css/bootstrap-icons.css') }}" rel="stylesheet">
-    <link href="{{ url_for('static', filename='css/templatemo-kind-heart-charity.css') }}" rel="stylesheet">
-</head>
+<section class="page-section">
+<div class="container col-md-6">
+    <div class="card p-4 shadow">
 
-<body>
+        <h3 class="text-center mb-3">Zakat Eligibility Calculator</h3>
 
-<nav class="navbar navbar-expand-lg bg-light shadow-lg">
-    <div class="container">
-        <a class="navbar-brand" href="{{ url_for('dashboard') }}">
-            <img src="{{ url_for('static', filename='images/logo.png') }}" class="logo img-fluid" alt="">
-            <span>
-                ZakaatIQ
-                <small>Zakat Eligibility</small>
-            </span>
-        </a>
+        <form method="POST">
+            <label>Monthly Income (€)</label>
+            <input type="number" name="income" class="form-control mb-3" required>
 
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                data-bs-target="#navbarNav" aria-controls="navbarNav"
-                aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+            <label>Savings (€)</label>
+            <input type="number" name="savings" class="form-control mb-3" required>
 
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item"><a class="nav-link" href="{{ url_for('dashboard') }}">Dashboard</a></li>
-                <li class="nav-item"><a class="nav-link active" href="{{ url_for('eligibility') }}">Zakat Eligibility</a></li>
-                <li class="nav-item"><a class="nav-link" href="{{ url_for('forecast') }}">Forecast</a></li>
-                <li class="nav-item"><a class="nav-link" href="{{ url_for('donate') }}">Donate</a></li>
-            </ul>
+            <label>Gold (grams)</label>
+            <input type="number" name="gold" class="form-control mb-3" required>
+
+            <label>Debts (€)</label>
+            <input type="number" name="debts" class="form-control mb-3" required>
+
+            <button class="btn btn-success w-100">Check Eligibility</button>
+        </form>
+
+        {% if result %}
+        <div class="alert alert-info mt-3 text-center">
+            {{ result }}
         </div>
+        {% endif %}
+
     </div>
-</nav>
-
-<section class="donate-section">
-    <div class="section-overlay"></div>
-    <div class="container">
-        <div class="row justify-content-center">
-
-            <div class="col-lg-6 col-12 mx-auto">
-                <form method="POST" class="custom-form donate-form">
-                    <h3 class="mb-4">Zakat Eligibility Calculator</h3>
-
-                    <div class="row">
-                        <div class="col-lg-6 col-12 mb-3">
-                            <label class="form-label">Monthly Income (€)</label>
-                            <input type="number" step="0.01" name="income" class="form-control" required>
-                        </div>
-
-                        <div class="col-lg-6 col-12 mb-3">
-                            <label class="form-label">Savings (€)</label>
-                            <input type="number" step="0.01" name="savings" class="form-control" required>
-                        </div>
-
-                        <div class="col-lg-6 col-12 mb-3">
-                            <label class="form-label">Gold Weight (grams)</label>
-                            <input type="number" step="0.01" name="gold" class="form-control" required>
-                        </div>
-
-                        <div class="col-lg-6 col-12 mb-3">
-                            <label class="form-label">Debts (€)</label>
-                            <input type="number" step="0.01" name="debts" class="form-control" required>
-                        </div>
-
-                        <div class="col-12">
-                            <button type="submit" class="form-control mt-3">Check Eligibility</button>
-                        </div>
-                    </div>
-                </form>
-
-                {% if result %}
-                <div class="alert alert-info text-center mt-4">
-                    <h5 class="mb-0">{{ result }}</h5>
-                </div>
-                {% endif %}
-            </div>
-
-        </div>
-    </div>
+</div>
 </section>
 
-<script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
-</body>
-</html>
+{% endblock %}
