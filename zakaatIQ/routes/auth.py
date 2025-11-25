@@ -1,35 +1,69 @@
-from flask import Flask, render_template, session
-from routes.auth import auth_bp
-from database.db import get_db, close_db
-from database.models import init_tables
+from flask import Blueprint, render_template, request, redirect, session, url_for, flash
+from werkzeug.security import generate_password_hash, check_password_hash
+from database.db import get_db
 
-app = Flask(__name__)
-app.secret_key = "super_secret_key"  # Replace later - load from env
+auth_bp = Blueprint('auth', __name__)
 
-# Register Blueprint
-app.register_blueprint(auth_bp)
+# -----------------------------------------
+# REGISTER
+# -----------------------------------------
+@auth_bp.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
+        confirm = request.form.get('confirm')
 
-# DATABASE INIT
-@app.before_first_request
-def create_tables():
-    db = get_db()
-    init_tables(db)
+        if password != confirm:
+            flash("Passwords do not match.")
+            return redirect(url_for('auth.register'))
 
-@app.teardown_appcontext
-def close_connection(exception):
-    close_db()
+        hashed_pw = generate_password_hash(password)
 
-# HOME
-@app.route('/')
-def home():
-    return render_template('index.html')
+        db = get_db()
+        cur = db.cursor()
 
-# DASHBOARD
-@app.route('/dashboard')
-def dashboard():
-    if 'user_id' not in session:
-        return redirect('/login')
-    return render_template("dashboard.html", username=session['username'])
+        try:
+            cur.execute("INSERT INTO users (username, password) VALUES (?, ?)",
+                        (username, hashed_pw))
+            db.commit()
+        except:
+            flash("Username already exists.")
+            return redirect(url_for('auth.register'))
 
-if __name__ == "__main__":
-    app.run(debug=True)
+        flash("Registration successful. Please login.")
+        return redirect(url_for('auth.login'))
+
+    return render_template("register.html")
+
+# -----------------------------------------
+# LOGIN
+# -----------------------------------------
+@auth_bp.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
+
+        db = get_db()
+        cur = db.cursor()
+        cur.execute("SELECT id, username, password FROM users WHERE username = ?", (username,))
+        user = cur.fetchone()
+
+        if user and check_password_hash(user[2], password):
+            session['user_id'] = user[0]
+            session['username'] = user[1]
+            return redirect('/dashboard')
+
+        flash("Invalid credentials.")
+        return redirect(url_for('auth.login'))
+
+    return render_template("login.html")
+
+# -----------------------------------------
+# LOGOUT
+# -----------------------------------------
+@auth_bp.route('/logout')
+def logout():
+    session.clear()
+    return redirect(url_for('auth.login'))

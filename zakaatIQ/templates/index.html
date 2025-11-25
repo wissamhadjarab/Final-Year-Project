@@ -1,30 +1,48 @@
 {% extends "base.html" %}
-
 {% block content %}
 
-<section class="page-section text-center">
-    <h2>Welcome to ZakaatIQ</h2>
-    <p class="lead">Your trusted Islamic finance assistant.</p>
+<!-- HERO SECTION -->
+<section class="hero-section d-flex align-items-center justify-content-center">
+    <div class="hero-overlay">
+        <div class="hero-content text-center">
 
-    <div class="container mt-4">
-        <div class="row">
+            <h1 class="hero-arabic">زكاة الذكاء</h1>
 
-            <div class="col-md-4">
-                <a href="{{ url_for('eligibility') }}" class="btn btn-outline-primary w-100 p-3">
-                    Zakat Eligibility Calculator
+            <h2 class="hero-title mb-4">ZakaatIQ – Smart Islamic Finance Assistant</h2>
+
+            <p class="hero-translation mb-4">
+                “Take from their wealth a charity by which you purify them and elevate them.”
+                <br>— Surah At-Tawbah (9:103)
+            </p>
+
+            <!-- BUTTON GROUP -->
+            <div class="d-flex flex-wrap justify-content-center gap-3 mt-4">
+
+                <a href="{{ url_for('eligibility') }}" 
+                   class="btn homepage-btn">
+                   Zakat Eligibility
                 </a>
-            </div>
 
-            <div class="col-md-4">
-                <a href="{{ url_for('forecast') }}" class="btn btn-outline-primary w-100 p-3">
-                    AI Income & Savings Forecast
+                <a href="{{ url_for('forecast') }}" 
+                   class="btn homepage-btn">
+                   AI Forecast
                 </a>
-            </div>
 
-            <div class="col-md-4">
-                <a href="{{ url_for('donate') }}" class="btn btn-outline-primary w-100 p-3">
-                    Donate Zakat
+                <a href="{{ url_for('donate') }}" 
+                   class="btn homepage-btn">
+                   Donate
                 </a>
+
+                <a href="{{ url_for('auth.login') }}" 
+                   class="btn homepage-btn">
+                   Login
+                </a>
+
+                <a href="{{ url_for('auth.register') }}" 
+                   class="btn homepage-btn">
+                   Register
+                </a>
+
             </div>
 
         </div>

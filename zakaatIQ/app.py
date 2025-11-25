@@ -1,21 +1,45 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash
+from routes.auth import auth_bp
+from database.db import get_db, close_db
+from database.models import init_tables
+
 import pickle
 import os
 from cryptography.fernet import Fernet
 import pandas as pd
 import base64
 import io
-
 import matplotlib
-matplotlib.use('Agg')   
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-
 
 app = Flask(__name__)
 app.secret_key = "your-very-secure-secret-key"
 
 # -----------------------------
-# Load ML Model
+# REGISTER BLUEPRINTS
+# -----------------------------
+app.register_blueprint(auth_bp)
+
+
+# -----------------------------
+# DATABASE INIT
+# -----------------------------
+@app.before_request
+def create_tables():
+    if not hasattr(app, 'db_initialized'):
+        db = get_db()
+        init_tables(db)
+        app.db_initialized = True
+
+
+@app.teardown_appcontext
+def shutdown_session(exception=None):
+    close_db()
+
+
+# -----------------------------
+# LOAD ML MODEL
 # -----------------------------
 ELIGIBILITY_MODEL_PATH = "models/eligibility_model.pkl"
 
@@ -27,7 +51,7 @@ except:
 
 
 # -----------------------------
-# Encryption Setup
+# ENCRYPTION SETUP
 # -----------------------------
 KEY_PATH = "utils/secret.key"
 
@@ -41,10 +65,8 @@ else:
 
 cipher = Fernet(key)
 
-
 def encrypt_value(value):
     return cipher.encrypt(str(value).encode())
-
 
 def decrypt_value(token):
     return cipher.decrypt(token).decode()
@@ -54,36 +76,16 @@ def decrypt_value(token):
 # ROUTES
 # -----------------------------
 
-# -----------------------------------------
-# HOMEPAGE (Islamic Landing Page)
-# -----------------------------------------
 @app.route("/")
 def index():
     return render_template("index.html")
 
 
-# -----------------------------------------
-# LOGIN
-# -----------------------------------------
-@app.route("/login", methods=["GET", "POST"])
-def login():
-    """ Simple demo login """
-    if request.method == "POST":
-        email = request.form.get("email")
-        session["user"] = email
-        return redirect(url_for("dashboard"))
-
-    return render_template("login.html")
-
-
-# -----------------------------------------
-# DASHBOARD (requires login)
-# -----------------------------------------
 @app.route("/dashboard")
 def dashboard():
-    if "user" not in session:
-        return redirect(url_for("login"))
-    return render_template("dashboard.html")
+    if "user_id" not in session:
+        return redirect(url_for("auth.login"))
+    return render_template("dashboard.html", username=session.get("username"))
 
 
 # -----------------------------------------
@@ -100,7 +102,7 @@ def eligibility():
             gold_grams = float(request.form["gold"])   # gold in grams
             debts = float(request.form["debts"])
 
-            # Encrypt (demo only)
+            # Encrypt
             enc_income = encrypt_value(income)
             enc_savings = encrypt_value(savings)
 
@@ -113,7 +115,6 @@ def eligibility():
                     result = "Zakat is Required"
                 else:
                     result = "Zakat is Not Required"
-
             else:
                 result = "ML Model Missing – Demo Result Only"
 
@@ -124,14 +125,13 @@ def eligibility():
 
 
 # -----------------------------------------
-# FORECAST GRAPH (DEMO)
+# FORECAST GRAPH
 # -----------------------------------------
 @app.route("/forecast", methods=["GET", "POST"])
 def forecast():
     graph = None
 
     if request.method == "POST":
-        # Demo forecast values
         months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun"]
         income = [2000, 2100, 2200, 2300, 2400, 2550]
 
@@ -141,7 +141,6 @@ def forecast():
         plt.xlabel("Month")
         plt.ylabel("Income (€)")
 
-        # Convert graph to base64
         png = io.BytesIO()
         plt.savefig(png, format="png", bbox_inches="tight")
         png.seek(0)
@@ -151,7 +150,7 @@ def forecast():
 
 
 # -----------------------------------------
-# DONATION PAGE
+# DONATION PAGE (DEMO)
 # -----------------------------------------
 @app.route("/donate", methods=["GET", "POST"])
 def donate():
@@ -172,11 +171,8 @@ def donate():
 @app.route("/logout")
 def logout():
     session.clear()
-    return redirect(url_for("login"))
+    return redirect(url_for("auth.login"))
 
 
-# -----------------------------------------
-# RUN APP
-# -----------------------------------------
 if __name__ == "__main__":
     app.run(debug=True)
