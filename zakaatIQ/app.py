@@ -5,7 +5,11 @@ from cryptography.fernet import Fernet
 import pandas as pd
 import base64
 import io
+
+import matplotlib
+matplotlib.use('Agg')   
 import matplotlib.pyplot as plt
+
 
 app = Flask(__name__)
 app.secret_key = "your-very-secure-secret-key"
