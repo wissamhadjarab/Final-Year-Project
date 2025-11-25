@@ -2,35 +2,66 @@
 {% block content %}
 
 <section class="page-section">
-<div class="container col-md-6">
-    <div class="card p-4 shadow">
+    <div class="container">
 
-        <h3 class="text-center mb-3">Zakat Eligibility Calculator</h3>
+        <!-- PAGE TITLE -->
+        <h2 class="text-center mb-4" style="color: var(--gold); font-weight: 700;">
+            Zakat Eligibility Calculator
+        </h2>
 
-        <form method="POST">
-            <label>Monthly Income (€)</label>
-            <input type="number" name="income" class="form-control mb-3" required>
+        <p class="text-center mb-5" style="font-size: 1.1rem;">
+            Enter your financial details to check if you qualify for Zakat based on Islamic rules.
+        </p>
 
-            <label>Savings (€)</label>
-            <input type="number" name="savings" class="form-control mb-3" required>
+        <!-- MAIN CARD -->
+        <div class="card mx-auto" style="max-width: 650px;">
 
-            <label>Gold (grams)</label>
-            <input type="number" name="gold" class="form-control mb-3" required>
+            <form method="POST">
 
-            <label>Debts (€)</label>
-            <input type="number" name="debts" class="form-control mb-3" required>
+                <!-- Income -->
+                <div class="mb-3">
+                    <label class="form-label"><strong>Total Monthly Income (€)</strong></label>
+                    <input type="number" name="income" class="form-control" step="0.01" required>
+                </div>
 
-            <button class="btn btn-success w-100">Check Eligibility</button>
-        </form>
+                <!-- Savings -->
+                <div class="mb-3">
+                    <label class="form-label"><strong>Total Savings (€)</strong></label>
+                    <input type="number" name="savings" class="form-control" step="0.01" required>
+                </div>
 
+                <!-- Gold -->
+                <div class="mb-3">
+                    <label class="form-label"><strong>Gold (grams)</strong></label>
+                    <input type="number" name="gold" class="form-control" step="0.01" required>
+                </div>
+
+                <!-- Debts -->
+                <div class="mb-3">
+                    <label class="form-label"><strong>Total Debts (€)</strong></label>
+                    <input type="number" name="debts" class="form-control" step="0.01" required>
+                </div>
+
+                <button class="btn btn-primary w-100 mt-3">
+                    Calculate Zakat Eligibility
+                </button>
+
+            </form>
+        </div>
+
+        <!-- RESULT BLOCK -->
         {% if result %}
-        <div class="alert alert-info mt-3 text-center">
-            {{ result }}
+        <div class="card mx-auto text-center mt-4 p-4" style="max-width: 650px; border: 2px solid var(--gold);">
+
+            <h4 style="color: var(--gold); font-weight: 700;">Zakat Result</h4>
+            <p class="mt-2" style="font-size: 1.2rem; font-weight: 600;">
+                {{ result }}
+            </p>
+
         </div>
         {% endif %}
 
     </div>
-</div>
 </section>
 
 {% endblock %}
