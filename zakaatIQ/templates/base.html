@@ -31,15 +31,39 @@
             <span class="navbar-toggler-icon"></span>
         </button>
 
-        <div class="collapse navbar-collapse" id="navMenu">
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item"><a class="nav-link" href="{{ url_for('index') }}">Home</a></li>
-                <li class="nav-item"><a class="nav-link" href="{{ url_for('eligibility') }}">Zakat Eligibility</a></li>
-                <li class="nav-item"><a class="nav-link" href="{{ url_for('forecast') }}">Forecast</a></li>
-                <li class="nav-item"><a class="nav-link" href="{{ url_for('donate') }}">Donate</a></li>
-                <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.login') }}">Login</a></li>
-            </ul>
-        </div>
+        <ul class="navbar-nav ms-auto">
+
+    <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('index') }}">Home</a>
+    </li>
+
+    {% if 'user_id' in session %}
+        <!-- Show when logged in -->
+        <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('dashboard') }}">Dashboard</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('eligibility') }}">Zakat Eligibility</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+        </li>
+
+    {% else %}
+        <!-- Show when NOT logged in -->
+        <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('eligibility') }}">Zakat Eligibility</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('auth.login') }}">Login</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('auth.register') }}">Register</a>
+        </li>
+    {% endif %}
+
+</ul>
+
     </div>
 </nav>
 

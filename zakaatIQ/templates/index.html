@@ -30,6 +30,13 @@
                     Donate
                 </a>
 
+                {% if 'user_id' in session %}
+                <a href="{{ url_for('dashboard') }}" class="homepage-btn">
+                    Go to Dashboard
+                </a>
+                {% endif %}
+
+
                 <a href="{{ url_for('auth.login') }}" class="homepage-btn">
                     Login
                 </a>
