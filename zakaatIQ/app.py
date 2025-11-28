@@ -6,7 +6,6 @@ from database.models import init_tables
 import pickle
 import os
 from cryptography.fernet import Fernet
-import pandas as pd
 import base64
 import io
 import matplotlib
@@ -23,7 +22,7 @@ app.register_blueprint(auth_bp)
 
 
 # -----------------------------
-# DATABASE INIT
+# DATABASE INIT (Flask 3 Safe)
 # -----------------------------
 @app.before_request
 def create_tables():
@@ -73,50 +72,127 @@ def decrypt_value(token):
 
 
 # -----------------------------
-# ROUTES
+# HOME
 # -----------------------------
-
 @app.route("/")
 def index():
     return render_template("index.html")
 
 
+# -----------------------------
+# DASHBOARD + HISTORY
+# -----------------------------
 @app.route("/dashboard")
 def dashboard():
     if "user_id" not in session:
         return redirect(url_for("auth.login"))
-    return render_template("dashboard.html", username=session.get("username"))
+
+    db = get_db()
+    cur = db.cursor()
+
+    # Load encrypted financial history
+    cur.execute("""
+        SELECT income, savings, debts, gold, created_at
+        FROM financial_history
+        WHERE user_id = ?
+        ORDER BY created_at DESC
+    """, (session["user_id"],))
+    history_rows = cur.fetchall()
+
+    # Decrypt values
+    history = []
+    for row in history_rows:
+        history.append({
+            "income": decrypt_value(row[0]),
+            "savings": decrypt_value(row[1]),
+            "debts": decrypt_value(row[2]),
+            "gold": decrypt_value(row[3]),
+            "created_at": row[4]
+        })
+
+    # Load Zakat results
+    cur.execute("""
+        SELECT result, explanation, created_at
+        FROM zakat_results
+        WHERE user_id = ?
+        ORDER BY created_at DESC
+    """, (session["user_id"],))
+    results_rows = cur.fetchall()
+
+    results = []
+    for row in results_rows:
+        results.append({
+            "result": row[0],
+            "explanation": row[1],
+            "created_at": row[2]
+        })
+
+    # Pair items safely / avoid Jinja errors
+    combined = list(zip(history, results))
+
+    return render_template(
+        "dashboard.html",
+        username=session["username"],
+        combined=combined
+    )
 
 
-# -----------------------------------------
-# ZAKAT ELIGIBILITY
-# -----------------------------------------
+# -----------------------------
+# ZAKAT ELIGIBILITY (FULL LOGIC)
+# -----------------------------
 @app.route("/eligibility", methods=["GET", "POST"])
 def eligibility():
+    if "user_id" not in session:
+        return redirect(url_for("auth.login"))
+
     result = None
 
     if request.method == "POST":
         try:
             income = float(request.form["income"])
             savings = float(request.form["savings"])
-            gold_grams = float(request.form["gold"])   # gold in grams
+            gold_grams = float(request.form["gold"])
             debts = float(request.form["debts"])
 
-            # Encrypt
+            # Encrypt inputs
             enc_income = encrypt_value(income)
             enc_savings = encrypt_value(savings)
+            enc_debts = encrypt_value(debts)
+            enc_gold = encrypt_value(gold_grams)
 
-            # Machine Learning Prediction
+            db = get_db()
+            cur = db.cursor()
+
+            # Save financial history
+            cur.execute("""
+                INSERT INTO financial_history (user_id, income, savings, debts, gold)
+                VALUES (?, ?, ?, ?, ?)
+            """, (session["user_id"], enc_income, enc_savings, enc_debts, enc_gold))
+            db.commit()
+
+            # ML model prediction
             if eligibility_model:
                 features = [[income, savings, gold_grams, debts]]
                 prediction = eligibility_model.predict(features)[0]
 
                 if prediction == 1:
-                    result = "Zakat is Required"
+                    result_text = "Zakat is Required"
+                    explanation = "Your net assets exceed the Nisab threshold."
                 else:
-                    result = "Zakat is Not Required"
+                    result_text = "Zakat is Not Required"
+                    explanation = "Your wealth does not meet the minimum Nisab level."
             else:
-                result = "ML Model Missing – Demo Result Only"
+                result_text = "ML Model Missing – Demo Only"
+                explanation = "No AI prediction available."
+
+            result = result_text
+
+            # Save Zakat result
+            cur.execute("""
+                INSERT INTO zakat_results (user_id, result, explanation)
+                VALUES (?, ?, ?)
+            """, (session["user_id"], result_text, explanation))
+            db.commit()
 
         except Exception as e:
             result = f"Error: {e}"
@@ -124,9 +200,9 @@ def eligibility():
     return render_template("eligibility.html", result=result)
 
 
-# -----------------------------------------
+# -----------------------------
 # FORECAST GRAPH
-# -----------------------------------------
+# -----------------------------
 @app.route("/forecast", methods=["GET", "POST"])
 def forecast():
     graph = None
@@ -149,9 +225,9 @@ def forecast():
     return render_template("forecast.html", graph=graph)
 
 
-# -----------------------------------------
+# -----------------------------
 # DONATION PAGE (DEMO)
-# -----------------------------------------
+# -----------------------------
 @app.route("/donate", methods=["GET", "POST"])
 def donate():
     confirmation = None
@@ -165,9 +241,9 @@ def donate():
     return render_template("donate.html", confirmation=confirmation)
 
 
-# -----------------------------------------
+# -----------------------------
 # LOGOUT
-# -----------------------------------------
+# -----------------------------
 @app.route("/logout")
 def logout():
     session.clear()
