@@ -252,3 +252,7 @@ def logout():
 
 if __name__ == "__main__":
     app.run(debug=True)
+
+from routes.zakat import zakat_bp
+
+app.register_blueprint(zakat_bp)
