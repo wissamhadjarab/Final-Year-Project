@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ZakaatIQ Dashboard</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+</head>
+<body>
+
+<!-- Header -->
+<header class="header_area">
+    <div class="container">
+        <nav class="navbar navbar-expand-lg navbar-light">
+
+            <a class="navbar-brand" href="{{ url_for('dashboard') }}">
+                <img src="{{ url_for('static', filename='images/logo.png') }}" alt="ZakaatIQ">
+            </a>
+
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav ms-auto">
+
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('dashboard') }}">Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('eligibility') }}">Zakat Eligibility</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('forecast') }}">Forecast</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('donate') }}">Donate</a></li>
+                </ul>
+            </div>
+
+        </nav>
+    </div>
+</header>
+
+<!-- Dashboard -->
+<section class="container mt-5">
+    <h2>Welcome to Your Dashboard</h2>
+    <p>Your personal Islamic finance assistant.</p>
+
+    <div class="row mt-4">
+
+        <div class="col-md-4">
+            <a href="{{ url_for('eligibility') }}" class="card p-4 text-center shadow-sm">
+                <h4>Zakat Eligibility</h4>
+                <p>Check if Zakat is due based on your finances.</p>
+            </a>
+        </div>
+
+        <div class="col-md-4">
+            <a href="{{ url_for('forecast') }}" class="card p-4 text-center shadow-sm">
+                <h4>Income & Savings Forecast</h4>
+                <p>AI-powered financial forecasting.</p>
+            </a>
+        </div>
+
+        <div class="col-md-4">
+            <a href="{{ url_for('donate') }}" class="card p-4 text-center shadow-sm">
+                <h4>Donate Zakat</h4>
+                <p>Give securely to verified Islamic charities.</p>
+            </a>
+        </div>
+
+    </div>
+</section>
+
+</body>
+</html>
